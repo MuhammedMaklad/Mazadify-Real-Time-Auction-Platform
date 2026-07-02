@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="AuctionPlatform.Application/AuctionPlatform.Application.csproj" />
+  <Project Path="AuctionPlatform.Domain/AuctionPlatform.Domain.csproj" />
+  <Project Path="AuctionPlatform.Infrastructure/AuctionPlatform.Infrastructure.csproj" />
+  <Project Path="AuctionPlatform.WebApi/AuctionPlatform.WebApi.csproj" />
+</Solution>
