@@ -1,4 +1,4 @@
-namespace AuctionPlatform.Domain.Enums;
+namespace AuctionPlatform.Domain.ValueTypes;
 
 public enum AuctionStatus
 {

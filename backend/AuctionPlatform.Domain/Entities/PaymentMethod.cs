@@ -1,4 +1,4 @@
-using AuctionPlatform.Domain.Enums;
+using AuctionPlatform.Domain.ValueTypes;
 
 namespace AuctionPlatform.Domain.Entities;
 

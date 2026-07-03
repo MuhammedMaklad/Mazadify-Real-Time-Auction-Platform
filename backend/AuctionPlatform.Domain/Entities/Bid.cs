@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using AuctionPlatform.Domain.Enums;
+using AuctionPlatform.Domain.ValueTypes;
 
 namespace AuctionPlatform.Domain.Entities;
 

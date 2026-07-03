@@ -9,6 +9,9 @@ public class AuctionItem
     public string Description { get; set; } = string.Empty;
     public string Condition { get; set; } = string.Empty;   // New, Used, Refurbished
 
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
+
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     // Navigation

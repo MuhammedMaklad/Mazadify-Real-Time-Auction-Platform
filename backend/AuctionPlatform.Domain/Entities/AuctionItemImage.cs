@@ -7,7 +7,8 @@ public class AuctionItemImage
 
     public string ImageUrl { get; set; } = string.Empty;
     public bool IsPrimary { get; set; }
-    public int DisplayOrder { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 
     // Navigation
     public AuctionItem AuctionItem { get; set; } = null!;

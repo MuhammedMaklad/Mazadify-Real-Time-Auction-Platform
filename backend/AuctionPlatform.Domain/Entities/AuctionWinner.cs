@@ -1,4 +1,4 @@
-using AuctionPlatform.Domain.Enums;
+using AuctionPlatform.Domain.ValueTypes;
 
 namespace AuctionPlatform.Domain.Entities;
 
@@ -16,6 +16,9 @@ public class AuctionWinner
     public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.Pending;
     public DeliveryStatus DeliveryStatus { get; set; } = DeliveryStatus.Pending;
     public string? TrackingNumber { get; set; }
+
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 
     public DateTime AwardedAt { get; set; } = DateTime.UtcNow;
     public DateTime? PaidAt { get; set; }

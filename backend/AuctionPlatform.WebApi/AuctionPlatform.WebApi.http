@@ -1,6 +1,74 @@
 @AuctionPlatform.WebApi_HostAddress = http://localhost:5213
 
-GET {{AuctionPlatform.WebApi_HostAddress}}/weatherforecast/
+### Get all auctions
+GET {{AuctionPlatform.WebApi_HostAddress}}/api/auctions
 Accept: application/json
 
-###
+### Get auction by Id
+GET {{AuctionPlatform.WebApi_HostAddress}}/api/auctions/C1000000-0000-0000-0000-000000000003
+Accept: application/json
+
+### Filter auctions by category
+GET {{AuctionPlatform.WebApi_HostAddress}}/api/auctions?CategoryId=A1000000-0000-0000-0000-000000000013&PageSize=10
+Accept: application/json
+
+### Filter auctions by status
+GET {{AuctionPlatform.WebApi_HostAddress}}/api/auctions?Status=Live
+Accept: application/json
+
+### Filter auctions with search
+GET {{AuctionPlatform.WebApi_HostAddress}}/api/auctions?SearchTerm=laptop&SortBy=title&SortDescending=false
+Accept: application/json
+
+### Get category tree
+GET {{AuctionPlatform.WebApi_HostAddress}}/api/categories
+Accept: application/json
+
+### Get category by slug
+GET {{AuctionPlatform.WebApi_HostAddress}}/api/categories/electronics
+Accept: application/json
+
+### Create a new auction
+POST {{AuctionPlatform.WebApi_HostAddress}}/api/auctions
+Content-Type: application/json
+
+{
+  "categoryId": "A1000000-0000-0000-0000-000000000014",
+  "title": "Brand New Gaming Console",
+  "description": "Next-gen gaming console, unopened box, sealed.",
+  "startingPrice": 350.00,
+  "reservePrice": 500.00,
+  "bidIncrement": 20.00,
+  "startTime": "2026-07-10T00:00:00Z",
+  "endTime": "2026-07-17T00:00:00Z",
+  "deliveryType": "Shipping",
+  "items": [
+    {
+      "name": "Gaming Console",
+      "description": "Latest model with 1TB SSD",
+      "condition": "New",
+      "imageUrls": [
+        "https://placehold.co/800x600?text=Console+Front",
+        "https://placehold.co/800x600?text=Console+Back"
+      ]
+    },
+    {
+      "name": "Extra Controller",
+      "description": "Wireless controller, color black",
+      "condition": "New",
+      "imageUrls": []
+    }
+  ]
+}
+
+### Update an auction
+PUT {{AuctionPlatform.WebApi_HostAddress}}/api/auctions/C1000000-0000-0000-0000-000000000001
+Content-Type: application/json
+
+{
+  "title": "Updated: Vintage Camera Collection",
+  "description": "Updated description with more details about the collection."
+}
+
+### Delete an auction (soft delete — only in Draft status)
+DELETE {{AuctionPlatform.WebApi_HostAddress}}/api/auctions/C1000000-0000-0000-0000-000000000001

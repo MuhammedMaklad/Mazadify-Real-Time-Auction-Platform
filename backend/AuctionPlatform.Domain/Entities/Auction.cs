@@ -1,4 +1,4 @@
-using AuctionPlatform.Domain.Enums;
+using AuctionPlatform.Domain.ValueTypes;
 
 namespace AuctionPlatform.Domain.Entities;
 
@@ -22,6 +22,9 @@ public class Auction
 
     public DeliveryType DeliveryType { get; set; }
     public string? DeliveryNotes { get; set; }
+
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
