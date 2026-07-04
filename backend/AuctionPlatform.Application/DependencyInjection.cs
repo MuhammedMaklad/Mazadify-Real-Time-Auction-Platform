@@ -24,6 +24,8 @@ public static class DependencyInjection
         
         services.AddScoped<IAutoBidService, AutoBidService>();
 
+        services.AddScoped<IAutoBidEngine, AutoBidEngine>();
+
         return services;
     }
 }
