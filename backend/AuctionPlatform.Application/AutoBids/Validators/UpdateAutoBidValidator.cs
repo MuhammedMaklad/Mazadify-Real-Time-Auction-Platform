@@ -12,6 +12,7 @@ namespace AuctionPlatform.Application.AutoBids.Validators
         {
             RuleFor(x => x.MaxAmount)
                 .GreaterThan(0)
+                .PrecisionScale(18, 2, false)
                 .WithMessage("Maximum bid amount must be greater than zero.");
         }
     }
