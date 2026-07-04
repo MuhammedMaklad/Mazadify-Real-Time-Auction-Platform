@@ -1,6 +1,8 @@
 using System.Reflection;
 using AuctionPlatform.Application.Auctions.Interfaces;
 using AuctionPlatform.Application.Auctions.Services;
+using AuctionPlatform.Application.AutoBids.Interfaces;
+using AuctionPlatform.Application.AutoBids.Services;
 using AuctionPlatform.Application.Categories.Interfaces;
 using AuctionPlatform.Application.Categories.Services;
 using FluentValidation;
@@ -19,6 +21,7 @@ public static class DependencyInjection
 
         services.AddScoped<IAuctionService, AuctionService>();
         services.AddScoped<ICategoryService, CategoryService>();
+        services.AddScoped<IAutoBidService, AutoBidService>();
 
         return services;
     }
