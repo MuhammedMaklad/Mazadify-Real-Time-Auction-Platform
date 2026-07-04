@@ -10,9 +10,33 @@ public class AutoBidConfiguration : IEntityTypeConfiguration<AutoBid>
     {
         builder.ToTable("AutoBids");
 
-        builder.HasKey(e => e.Id);
+        builder.HasKey(x => x.Id);
 
-        builder.Property(e => e.MaxAmount)
-            .HasColumnType("decimal(18,2)");
+        builder.Property(x => x.MaxAmount)
+            .HasColumnType("decimal(18,2)")
+            .IsRequired();
+
+        builder.Property(x => x.IsActive)
+            .IsRequired();
+
+        builder.Property(x => x.CreatedAt)
+            .IsRequired();
+
+        builder.HasOne(x => x.Auction)
+            .WithMany(a => a.AutoBids)
+            .HasForeignKey(x => x.AuctionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(x => x.Bidder)
+            .WithMany(u => u.AutoBids)
+            .HasForeignKey(x => x.BidderId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(x => new
+        {
+            x.AuctionId,
+            x.BidderId
+        }).IsUnique();
     }
 }
+
