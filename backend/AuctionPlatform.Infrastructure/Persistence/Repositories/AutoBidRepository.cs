@@ -3,7 +3,7 @@ using AuctionPlatform.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
-
+using Microsoft.EntityFrameworkCore;
 namespace AuctionPlatform.Infrastructure.Persistence.Repositories
 {
     public class AutoBidRepository : IAutoBidRepository
