@@ -20,6 +20,8 @@ public static class DependencyInjection
         services.AddAutoMapper(assembly);
 
         services.AddScoped<IAuctionService, AuctionService>();
+        services.AddScoped<IBidService, BidService>();
+        services.AddScoped<IBidAuditService, BidAuditService>();
         services.AddScoped<ICategoryService, CategoryService>();
         
         services.AddScoped<IAutoBidService, AutoBidService>();
