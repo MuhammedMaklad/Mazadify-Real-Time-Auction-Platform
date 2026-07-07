@@ -17,6 +17,7 @@ public class BidService : IBidService
     private readonly INotificationService _notificationService;
     private readonly IIdempotencyCache _idempotencyCache;
     private readonly IBidAuditService _auditService;
+    private readonly IAutoBidRepository _autoBidRepository;
     private const int IDEMPOTENCY_TTL_MINUTES = 10;
 
     public BidService(
@@ -25,7 +26,8 @@ public class BidService : IBidService
         IMapper mapper,
         INotificationService notificationService,
         IIdempotencyCache idempotencyCache,
-        IBidAuditService auditService)
+        IBidAuditService auditService,
+        IAutoBidRepository autoBidRepository)
     {
         _bidRepository = bidRepository;
         _auctionRepository = auctionRepository;
@@ -33,6 +35,7 @@ public class BidService : IBidService
         _notificationService = notificationService;
         _idempotencyCache = idempotencyCache;
         _auditService = auditService;
+        _autoBidRepository = autoBidRepository;
     }
 
     /// <summary>
@@ -139,6 +142,11 @@ public class BidService : IBidService
             // await _autoBidEngine.EvaluateAsync(bid, ct);
             //
             // ======================================================================
+
+            if (!isAutoBid)
+            {
+                await TriggerAutoBidsAsync(bid, ct);
+            }
         }
         catch (BidConcurrencyException)
         {
@@ -215,5 +223,55 @@ public class BidService : IBidService
             return null;
 
         return _mapper.Map<BidDto>(bid);
+    }
+
+
+    private async Task TriggerAutoBidsAsync(
+    Bid latestBid,
+    CancellationToken ct)
+    {
+        var auction = await _auctionRepository.GetByIdAsync(
+            latestBid.AuctionId,
+            ct);
+
+        if (auction is null)
+            return;
+
+        while (true)
+        {
+            var winner = (await _autoBidRepository
+                .GetActiveByAuctionAsync(latestBid.AuctionId, ct))
+                .Where(x => x.BidderId != latestBid.BidderId)
+                .Where(x => x.MaxAmount > latestBid.Amount)
+                .OrderByDescending(x => x.MaxAmount)
+                .ThenBy(x => x.CreatedAt)
+                .FirstOrDefault();
+
+            if (winner is null)
+                break;
+
+            var nextAmount = latestBid.Amount + auction.BidIncrement;
+
+            if (nextAmount > winner.MaxAmount)
+                break;
+
+            var result = await PlaceBidAsync(
+                latestBid.AuctionId,
+                winner.BidderId,
+                new PlaceBidRequest
+                {
+                    Amount = nextAmount
+                },
+                null,
+                true,
+                ct);
+
+            var newLatestBid = await _bidRepository.GetByIdAsync(result.Id, ct);
+
+            if (newLatestBid is null)
+                break;
+
+            latestBid = newLatestBid;
+        }
     }
 }
