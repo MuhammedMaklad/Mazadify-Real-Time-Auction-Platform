@@ -44,6 +44,7 @@ public class BidService : IBidService
         Guid bidderId,
         PlaceBidRequest request,
         string? ipAddress = null,
+        bool isAutoBid = false,
         CancellationToken ct = default)
     {
         // Check idempotency: prevent duplicate bid if client retries
@@ -97,7 +98,7 @@ public class BidService : IBidService
             Status = BidStatus.Accepted,
             PlacedAt = DateTime.UtcNow,
             IpAddress = ipAddress,
-            IsAutoBid = false
+            IsAutoBid = isAutoBid
         };
 
         try

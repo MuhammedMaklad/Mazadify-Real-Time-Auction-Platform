@@ -61,7 +61,7 @@ public class BidsController : ControllerBase
 
             var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
 
-            var result = await _bidService.PlaceBidAsync(auctionId, bidderId, request, ipAddress, ct);
+            var result = await _bidService.PlaceBidAsync(auctionId, bidderId, request, ipAddress, ct: ct);
             return CreatedAtAction(nameof(GetHighestBid), new { auctionId }, result);
         }
         catch (KeyNotFoundException ex)

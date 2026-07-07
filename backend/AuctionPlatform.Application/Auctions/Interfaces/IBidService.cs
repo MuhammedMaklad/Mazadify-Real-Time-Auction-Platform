@@ -19,6 +19,7 @@ public interface IBidService
         Guid bidderId,
         PlaceBidRequest request,
         string? ipAddress = null,
+        bool isAutoBid = false,
         CancellationToken ct = default);
 
     /// <summary>
