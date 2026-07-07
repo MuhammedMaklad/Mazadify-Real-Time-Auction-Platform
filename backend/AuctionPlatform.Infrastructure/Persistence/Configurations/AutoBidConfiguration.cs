@@ -37,6 +37,14 @@ public class AutoBidConfiguration : IEntityTypeConfiguration<AutoBid>
             x.AuctionId,
             x.BidderId
         }).IsUnique();
+
+        builder.HasIndex(x => new
+        {
+            x.AuctionId,
+            x.IsActive,
+            x.MaxAmount
+        }).IsDescending(false, false, true);
     }
 }
+
 
