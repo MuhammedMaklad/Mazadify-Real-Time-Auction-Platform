@@ -120,6 +120,25 @@ public class BidService : IBidService
             // SaveChanges is now atomic within the transaction
             // BidConcurrencyException will be thrown here if a concurrency conflict occurs
             await _bidRepository.SaveChangesAsync(ct);
+
+            // ======================================================================
+            // TODO (Member 5 - AutoBid Engine)
+            //
+            // After a successful manual bid, trigger the AutoBid Engine.
+            //
+            // The engine will:
+            // 1. Load all active auto bids for this auction.
+            // 2. Exclude the latest bidder.
+            // 3. Select the highest eligible auto bid.
+            // 4. Calculate the next bid amount.
+            // 5. Place an automatic bid through IBidService.
+            // 6. Repeat until no bidder can outbid.
+            //
+            // Example:
+            //
+            // await _autoBidEngine.EvaluateAsync(bid, ct);
+            //
+            // ======================================================================
         }
         catch (BidConcurrencyException)
         {
