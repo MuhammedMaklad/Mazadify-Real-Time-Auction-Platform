@@ -23,4 +23,22 @@ public interface INotificationService
         Guid previousBidderId,
         decimal currentHighestBid,
         CancellationToken ct = default);
+
+    /// <summary>
+    /// Notifies the winner of the auction.
+    /// </summary>
+    Task NotifyYouWonAsync(
+        Guid auctionId,
+        Guid winnerId,
+        decimal finalPrice,
+        CancellationToken ct = default);
+
+    /// <summary>
+    /// Notifies the winner that payment is required.
+    /// </summary>
+    Task NotifyPaymentRequiredAsync(
+        Guid auctionId,
+        Guid winnerId,
+        decimal finalPrice,
+        CancellationToken ct = default);
 }

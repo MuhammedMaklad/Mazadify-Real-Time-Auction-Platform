@@ -27,4 +27,24 @@ public class NoOpNotificationService : INotificationService
         // TODO: Implement real SignalR notification
         return Task.CompletedTask;
     }
+
+    public Task NotifyYouWonAsync(
+        Guid auctionId,
+        Guid winnerId,
+        decimal finalPrice,
+        CancellationToken ct = default)
+    {
+        // TODO: Implement real SignalR notification
+        return Task.CompletedTask;
+    }
+
+    public Task NotifyPaymentRequiredAsync(
+        Guid auctionId,
+        Guid winnerId,
+        decimal finalPrice,
+        CancellationToken ct = default)
+    {
+        // TODO: Implement real SignalR notification
+        return Task.CompletedTask;
+    }
 }
