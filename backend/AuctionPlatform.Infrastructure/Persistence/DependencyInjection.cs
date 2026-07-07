@@ -25,6 +25,7 @@ public static class DependencyInjection
         services.AddScoped<IAuctionCategoryRepository, AuctionCategoryRepository>();
         services.AddScoped<IAuctionItemRepository, AuctionItemRepository>();
         services.AddScoped<IBidRepository, BidRepository>();
+        services.AddScoped<IAuctionWinnerRepository, AuctionWinnerRepository>();
 
         // Temporary no-op notification service. Will be replaced by Real-Time module.
         services.AddScoped<INotificationService, NoOpNotificationService>();
