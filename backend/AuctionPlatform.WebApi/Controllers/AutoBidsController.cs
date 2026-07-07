@@ -1,12 +1,15 @@
-﻿using AuctionPlatform.Application.AutoBids.DTOs;
+using AuctionPlatform.Application.AutoBids.DTOs;
 using AuctionPlatform.Application.AutoBids.Interfaces;
 using AuctionPlatform.Application.AutoBids.Validators;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace AuctionPlatform.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auctions/{auctionId:guid}/auto-bids")]
     [ApiController]
     public class AutoBidsController : ControllerBase
     {
@@ -26,7 +29,8 @@ namespace AuctionPlatform.WebApi.Controllers
 
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(
-            Guid id,
+            [FromRoute] Guid auctionId,
+            [FromRoute] Guid id,
             CancellationToken ct)
         {
             var result = await _autoBidService.GetByIdAsync(id, ct);
@@ -36,10 +40,10 @@ namespace AuctionPlatform.WebApi.Controllers
 
         [HttpGet("me")]
         public async Task<IActionResult> GetMyAutoBid(
-            Guid auctionId,
+            [FromRoute] Guid auctionId,
             CancellationToken ct)
         {
-            // مؤقتاً لحد Member 1 يخلص Authentication
+            // TODO: Extract bidderId from authenticated user (JWT claims) when Member 1 finishes Auth.
             var bidderId = Guid.Parse("B1000000-0000-0000-0000-000000000001");
 
             var result = await _autoBidService
@@ -50,7 +54,7 @@ namespace AuctionPlatform.WebApi.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Create(
-            Guid auctionId,
+            [FromRoute] Guid auctionId,
             [FromBody] CreateAutoBidRequest request,
             CancellationToken ct)
         {
@@ -59,7 +63,7 @@ namespace AuctionPlatform.WebApi.Controllers
             if (!validation.IsValid)
                 return BadRequest(validation.Errors);
 
-            // مؤقتاً
+            // TODO: Extract bidderId from authenticated user (JWT claims) when Member 1 finishes Auth.
             var bidderId = Guid.Parse("B1000000-0000-0000-0000-000000000001");
 
             var result = await _autoBidService
@@ -77,8 +81,8 @@ namespace AuctionPlatform.WebApi.Controllers
 
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(
-            Guid auctionId,
-            Guid id,
+            [FromRoute] Guid auctionId,
+            [FromRoute] Guid id,
             [FromBody] UpdateAutoBidRequest request,
             CancellationToken ct)
         {
@@ -87,6 +91,7 @@ namespace AuctionPlatform.WebApi.Controllers
             if (!validation.IsValid)
                 return BadRequest(validation.Errors);
 
+            // TODO: Extract bidderId from authenticated user (JWT claims) when Member 1 finishes Auth.
             var bidderId = Guid.Parse("B1000000-0000-0000-0000-000000000001");
 
             var result = await _autoBidService.UpdateAsync(
@@ -100,10 +105,11 @@ namespace AuctionPlatform.WebApi.Controllers
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(
-            Guid auctionId,
-            Guid id,
+            [FromRoute] Guid auctionId,
+            [FromRoute] Guid id,
             CancellationToken ct)
         {
+            // TODO: Extract bidderId from authenticated user (JWT claims) when Member 1 finishes Auth.
             var bidderId = Guid.Parse("B1000000-0000-0000-0000-000000000001");
 
             await _autoBidService.DeleteAsync(
