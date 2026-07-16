@@ -16,6 +16,8 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     public DbSet<AuctionItem> AuctionItems => Set<AuctionItem>();
     public DbSet<AuctionItemImage> AuctionItemImages => Set<AuctionItemImage>();
     public DbSet<AuctionWinner> AuctionWinners => Set<AuctionWinner>();
+    public DbSet<Notification> Notifications => Set<Notification>();
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
