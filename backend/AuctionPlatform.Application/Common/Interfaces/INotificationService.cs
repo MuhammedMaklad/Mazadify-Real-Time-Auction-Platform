@@ -1,8 +1,10 @@
+using AuctionPlatform.Application.Common.Models;
+using AuctionPlatform.Application.Notifications.DTOs;
+
 namespace AuctionPlatform.Application.Common.Interfaces;
 
 /// <summary>
 /// Infrastructure-agnostic notification service.
-/// Implementation will handle SignalR broadcast and persistence.
 /// </summary>
 public interface INotificationService
 {
@@ -41,4 +43,18 @@ public interface INotificationService
         Guid winnerId,
         decimal finalPrice,
         CancellationToken ct = default);
+
+    Task<PagedResult<NotificationDto>> GetUserNotificationsAsync(
+        Guid userId,
+        bool unreadOnly,
+        int page,
+        int pageSize,
+        CancellationToken ct = default);
+
+    Task MarkAsReadAsync(
+        Guid notificationId,
+        Guid userId,
+        CancellationToken ct = default);
+
+    Task MarkAllAsReadAsync(Guid userId, CancellationToken ct = default);
 }

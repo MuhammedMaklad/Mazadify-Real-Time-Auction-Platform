@@ -3,6 +3,9 @@ using AuctionPlatform.Application.Auctions.Services;
 using AuctionPlatform.Application.Common.Interfaces;
 using AuctionPlatform.Infrastructure.Caching;
 using AuctionPlatform.Infrastructure.Notifications;
+using AuctionPlatform.Application.Hubs;
+using AuctionPlatform.Infrastructure.Notifications.Services;
+
 using AuctionPlatform.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -36,6 +39,17 @@ public static class DependencyInjection
         services.AddScoped<IIdempotencyCache, DistributedIdempotencyCache>();
 
         services.AddScoped<IAutoBidRepository, AutoBidRepository>();
+        services.AddScoped<INotificationRepository, NotificationRepository>();
+        services.AddScoped<INotificationService, NotificationService>();
+
+        var redisConnection = configuration.GetConnectionString("Redis")
+            ?? configuration.GetValue<string>("Redis:Configuration");
+
+        services.AddSignalR()
+            .AddStackExchangeRedis(redisConnection ?? "localhost:6379");
+
+
+
 
         services.AddApplication();
 
