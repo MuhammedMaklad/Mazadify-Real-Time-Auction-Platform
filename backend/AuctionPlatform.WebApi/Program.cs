@@ -1,8 +1,12 @@
+using System.Text;
+using AuctionPlatform.Application.Hubs;
 using AuctionPlatform.Domain.Entities;
 using AuctionPlatform.Infrastructure.Persistence;
 using AuctionPlatform.WebApi.Middleware;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +40,36 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var jwtSettings = builder.Configuration.GetSection("Jwt");
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings["Issuer"] ?? "Mazadify",
+            ValidAudience = jwtSettings["Audience"] ?? "Mazadify.Users",
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? "MazadifySuperSecretKeyForDevOnly!123")),
+            RoleClaimType = "role",
+            NameClaimType = "sub"
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                if (!string.IsNullOrEmpty(accessToken))
+                    context.Token = accessToken;
+                return Task.CompletedTask;
+            }
+        };
+    });
+
 builder.Services.AddAuthorization();
 builder.Services.AddInfrastructure(builder.Configuration);
 
@@ -47,6 +81,11 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 using (var scope = app.Services.CreateScope())
 {
@@ -64,5 +103,6 @@ app.UseAuthorization();
 
 app.MapGet("/", () => "AuctionPlatform.WebApi is running!");
 app.MapControllers();
+app.MapHub<AuctionHub>("/hubs/auction");
 
 app.Run();

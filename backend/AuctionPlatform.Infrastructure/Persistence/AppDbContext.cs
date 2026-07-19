@@ -18,6 +18,8 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     public DbSet<AuctionWinner> AuctionWinners => Set<AuctionWinner>();
     public DbSet<PaymentMethod> PaymentMethods => Set<PaymentMethod>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<Notification> Notifications => Set<Notification>();
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
