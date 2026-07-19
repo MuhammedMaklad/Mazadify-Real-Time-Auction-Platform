@@ -1,0 +1,34 @@
+.cd-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.cd-time {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #424242;
+  transition: color 0.3s ease;
+}
+
+.cd-ending .cd-time {
+  color: #c62828;
+  animation: cd-blink 1s step-start infinite;
+}
+
+@keyframes cd-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+.cd-ending-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #c62828;
+  background: #ffebee;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+}

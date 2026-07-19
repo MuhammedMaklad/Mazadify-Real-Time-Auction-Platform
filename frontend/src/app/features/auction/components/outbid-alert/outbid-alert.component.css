@@ -1,0 +1,68 @@
+.oba-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: #fff3e0;
+  border: 1.5px solid #fb8c00;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  animation: slide-in 0.3s ease-out;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.oba-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.oba-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.oba-title {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #e65100;
+}
+
+.oba-message {
+  font-size: 0.82rem;
+  color: #bf360c;
+}
+
+.oba-amount {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.oba-dismiss {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #e65100;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0;
+  flex-shrink: 0;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+
+.oba-dismiss:hover {
+  opacity: 1;
+}

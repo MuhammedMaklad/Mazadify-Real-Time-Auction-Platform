@@ -1,0 +1,22 @@
+<div class="hbd-wrapper">
+  <span class="hbd-label">Current Highest Bid</span>
+
+  <div class="hbd-amount-row">
+    <span class="hbd-amount" [class.hbd-pulse]="pulsing">
+      {{ displayAmount | currency:'USD':'symbol':'1.2-2' }}
+    </span>
+
+    <span *ngIf="currentBid === 0" class="hbd-badge hbd-badge--start">
+      Starting price
+    </span>
+
+    <span *ngIf="currentBid > 0" class="hbd-badge hbd-badge--live">
+      Live
+    </span>
+  </div>
+
+  <span *ngIf="bidIncrement > 0" class="hbd-increment">
+    Min. next bid:
+    <strong>{{ minimumNextBid | currency:'USD':'symbol':'1.2-2' }}</strong>
+  </span>
+</div>

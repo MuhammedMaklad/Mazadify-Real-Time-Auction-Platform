@@ -1,16 +1,15 @@
 using AuctionPlatform.Application.AutoBids.DTOs;
 using AuctionPlatform.Application.AutoBids.Interfaces;
 using AuctionPlatform.Application.AutoBids.Validators;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace AuctionPlatform.WebApi.Controllers
 {
     [Route("api/auctions/{auctionId:guid}/auto-bids")]
     [ApiController]
+    [Authorize]
     public class AutoBidsController : ControllerBase
     {
         private readonly IAutoBidService _autoBidService;
@@ -25,6 +24,13 @@ namespace AuctionPlatform.WebApi.Controllers
             _autoBidService = autoBidService;
             _createValidator = createValidator;
             _updateValidator = updateValidator;
+        }
+
+        private Guid? ResolveCurrentUserId()
+        {
+            var value = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                ?? User.FindFirstValue("sub");
+            return Guid.TryParse(value, out var id) ? id : null;
         }
 
         [HttpGet("{id:guid}")]
@@ -43,11 +49,12 @@ namespace AuctionPlatform.WebApi.Controllers
             [FromRoute] Guid auctionId,
             CancellationToken ct)
         {
-            // TODO: Extract bidderId from authenticated user (JWT claims) when Member 1 finishes Auth.
-            var bidderId = Guid.Parse("B1000000-0000-0000-0000-000000000001");
+            var bidderId = ResolveCurrentUserId();
+            if (bidderId is null)
+                return Unauthorized(new { message = "User identity claim not found or invalid." });
 
             var result = await _autoBidService
-                .GetUserAutoBidAsync(auctionId, bidderId, ct);
+                .GetUserAutoBidAsync(auctionId, bidderId.Value, ct);
 
             return Ok(result);
         }
@@ -63,11 +70,12 @@ namespace AuctionPlatform.WebApi.Controllers
             if (!validation.IsValid)
                 return BadRequest(validation.Errors);
 
-            // TODO: Extract bidderId from authenticated user (JWT claims) when Member 1 finishes Auth.
-            var bidderId = Guid.Parse("B1000000-0000-0000-0000-000000000001");
+            var bidderId = ResolveCurrentUserId();
+            if (bidderId is null)
+                return Unauthorized(new { message = "User identity claim not found or invalid." });
 
             var result = await _autoBidService
-                .CreateAsync(auctionId, bidderId, request, ct);
+                .CreateAsync(auctionId, bidderId.Value, request, ct);
 
             return CreatedAtAction(
                 nameof(GetById),
@@ -91,12 +99,13 @@ namespace AuctionPlatform.WebApi.Controllers
             if (!validation.IsValid)
                 return BadRequest(validation.Errors);
 
-            // TODO: Extract bidderId from authenticated user (JWT claims) when Member 1 finishes Auth.
-            var bidderId = Guid.Parse("B1000000-0000-0000-0000-000000000001");
+            var bidderId = ResolveCurrentUserId();
+            if (bidderId is null)
+                return Unauthorized(new { message = "User identity claim not found or invalid." });
 
             var result = await _autoBidService.UpdateAsync(
                 id,
-                bidderId,
+                bidderId.Value,
                 request,
                 ct);
 
@@ -109,12 +118,13 @@ namespace AuctionPlatform.WebApi.Controllers
             [FromRoute] Guid id,
             CancellationToken ct)
         {
-            // TODO: Extract bidderId from authenticated user (JWT claims) when Member 1 finishes Auth.
-            var bidderId = Guid.Parse("B1000000-0000-0000-0000-000000000001");
+            var bidderId = ResolveCurrentUserId();
+            if (bidderId is null)
+                return Unauthorized(new { message = "User identity claim not found or invalid." });
 
             await _autoBidService.DeleteAsync(
                 id,
-                bidderId,
+                bidderId.Value,
                 ct);
 
             return NoContent();
