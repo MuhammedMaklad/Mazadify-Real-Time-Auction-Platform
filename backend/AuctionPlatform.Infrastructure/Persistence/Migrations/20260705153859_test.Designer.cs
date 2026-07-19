@@ -4,6 +4,7 @@ using AuctionPlatform.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuctionPlatform.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260705153859_test")]
+    partial class test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -405,13 +408,9 @@ namespace AuctionPlatform.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AuctionId");
+
                     b.HasIndex("BidderId");
-
-                    b.HasIndex("AuctionId", "BidderId")
-                        .IsUnique();
-
-                    b.HasIndex("AuctionId", "IsActive", "MaxAmount")
-                        .IsDescending(false, false, true);
 
                     b.ToTable("AutoBids", (string)null);
                 });
@@ -479,23 +478,17 @@ namespace AuctionPlatform.Infrastructure.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsRead")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("bit");
 
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Payload")
                         .HasColumnType("nvarchar(max)");
@@ -505,23 +498,19 @@ namespace AuctionPlatform.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId", "IsRead", "CreatedAt")
-                        .HasDatabaseName("IX_Notifications_UserId_IsRead_CreatedAt");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notification");
                 });
 
             modelBuilder.Entity("AuctionPlatform.Domain.Entities.PaymentMethod", b =>
@@ -828,7 +817,7 @@ namespace AuctionPlatform.Infrastructure.Persistence.Migrations
                     b.HasOne("AuctionPlatform.Domain.Entities.Auction", "Auction")
                         .WithOne("Winner")
                         .HasForeignKey("AuctionPlatform.Domain.Entities.AuctionWinner", "AuctionId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("AuctionPlatform.Domain.Entities.PaymentMethod", "PaymentMethod")
@@ -868,7 +857,7 @@ namespace AuctionPlatform.Infrastructure.Persistence.Migrations
                     b.HasOne("AuctionPlatform.Domain.Entities.User", "Bidder")
                         .WithMany("AutoBids")
                         .HasForeignKey("BidderId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Auction");

@@ -1,5 +1,8 @@
 using AuctionPlatform.Application;
+using AuctionPlatform.Application.Auctions.Services;
 using AuctionPlatform.Application.Common.Interfaces;
+using AuctionPlatform.Infrastructure.Caching;
+using AuctionPlatform.Infrastructure.Notifications;
 using AuctionPlatform.Application.Hubs;
 using AuctionPlatform.Infrastructure.Notifications.Services;
 
@@ -24,6 +27,18 @@ public static class DependencyInjection
         services.AddScoped<IAuctionRepository, AuctionRepository>();
         services.AddScoped<IAuctionCategoryRepository, AuctionCategoryRepository>();
         services.AddScoped<IAuctionItemRepository, AuctionItemRepository>();
+        services.AddScoped<IBidRepository, BidRepository>();
+        services.AddScoped<IAuctionWinnerRepository, AuctionWinnerRepository>();
+
+        // Temporary no-op notification service. Will be replaced by Real-Time module.
+        services.AddScoped<INotificationService, NoOpNotificationService>();
+
+        // Idempotency cache: uses distributed cache (Redis or in-memory)
+        services.AddMemoryCache();
+        services.AddDistributedMemoryCache(); // In-memory for development (Redis in production)
+        services.AddScoped<IIdempotencyCache, DistributedIdempotencyCache>();
+
+        services.AddScoped<IAutoBidRepository, AutoBidRepository>();
         services.AddScoped<INotificationRepository, NotificationRepository>();
         services.AddScoped<INotificationService, NotificationService>();
 

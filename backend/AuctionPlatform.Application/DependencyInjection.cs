@@ -1,8 +1,12 @@
 using System.Reflection;
 using AuctionPlatform.Application.Auctions.Interfaces;
 using AuctionPlatform.Application.Auctions.Services;
+using AuctionPlatform.Application.AutoBids.Interfaces;
+using AuctionPlatform.Application.AutoBids.Services;
 using AuctionPlatform.Application.Categories.Interfaces;
 using AuctionPlatform.Application.Categories.Services;
+using AuctionPlatform.Application.Winners.Interfaces;
+using AuctionPlatform.Application.Winners.Services;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,7 +22,15 @@ public static class DependencyInjection
         services.AddAutoMapper(assembly);
 
         services.AddScoped<IAuctionService, AuctionService>();
+        services.AddScoped<IBidService, BidService>();
+        services.AddScoped<IBidAuditService, BidAuditService>();
         services.AddScoped<ICategoryService, CategoryService>();
+        
+        services.AddScoped<IAutoBidService, AutoBidService>();
+
+        services.AddScoped<IAutoBidEngine, AutoBidEngine>();
+
+        services.AddScoped<IAuctionWinnerService, AuctionWinnerService>();
 
         return services;
     }
