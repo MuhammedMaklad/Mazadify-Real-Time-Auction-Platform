@@ -1,4 +1,6 @@
 using AuctionPlatform.Application.Common.Interfaces;
+using AuctionPlatform.Application.Common.Models;
+using AuctionPlatform.Application.Notifications.DTOs;
 
 namespace AuctionPlatform.Infrastructure.Notifications;
 
@@ -45,6 +47,35 @@ public class NoOpNotificationService : INotificationService
         CancellationToken ct = default)
     {
         // TODO: Implement real SignalR notification
+        return Task.CompletedTask;
+    }
+
+    public Task<PagedResult<NotificationDto>> GetUserNotificationsAsync(
+        Guid userId,
+        bool unreadOnly,
+        int page,
+        int pageSize,
+        CancellationToken ct = default)
+    {
+        return Task.FromResult(new PagedResult<NotificationDto>
+        {
+            Items = new List<NotificationDto>(),
+            TotalCount = 0,
+            Page = page,
+            PageSize = pageSize
+        });
+    }
+
+    public Task MarkAsReadAsync(
+        Guid notificationId,
+        Guid userId,
+        CancellationToken ct = default)
+    {
+        return Task.CompletedTask;
+    }
+
+    public Task MarkAllAsReadAsync(Guid userId, CancellationToken ct = default)
+    {
         return Task.CompletedTask;
     }
 }
