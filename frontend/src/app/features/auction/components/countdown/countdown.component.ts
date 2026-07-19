@@ -3,7 +3,8 @@ import {
   Input,
   OnInit,
   OnDestroy,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject } from 'rxjs';
@@ -14,16 +15,8 @@ import { SignalRService } from '../../../../core/services/signalr.service';
   selector: 'app-countdown',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div class="countdown" [class.ending]="isEnding">
-      <span class="time">{{ formattedTime }}</span>
-    </div>
-  `,
-  styles: [`
-    .countdown { font-variant-numeric: tabular-nums; }
-    .ending { color: #d32f2f; font-weight: 700; }
-    .time { font-size: 1.25rem; }
-  `],
+  templateUrl: './countdown.component.html',
+  styleUrl: './countdown.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CountdownComponent implements OnInit, OnDestroy {
@@ -34,16 +27,22 @@ export class CountdownComponent implements OnInit, OnDestroy {
   isEnding = false;
 
   private endDate!: Date;
-  private timer: any;
+  private timer: ReturnType<typeof setInterval> | null = null;
   private destroy$ = new Subject<void>();
   private serverDriftMs = 0;
 
-  constructor(private readonly signalR: SignalRService) {}
+  constructor(
+    private readonly signalR: SignalRService,
+    private readonly cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
     this.endDate = new Date(this.endTime);
     this.tick();
-    this.timer = setInterval(() => this.tick(), 1000);
+    this.timer = setInterval(() => {
+      this.tick();
+      this.cdr.markForCheck();
+    }, 1000);
 
     this.signalR.countdownSync$
       .pipe(
@@ -52,8 +51,7 @@ export class CountdownComponent implements OnInit, OnDestroy {
       )
       .subscribe((sync) => {
         if (sync) {
-          const serverTime = new Date(sync.serverTimeUtc).getTime();
-          this.serverDriftMs = serverTime - Date.now();
+          this.serverDriftMs = new Date(sync.serverTimeUtc).getTime() - Date.now();
         }
       });
   }
@@ -61,7 +59,7 @@ export class CountdownComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    clearInterval(this.timer);
+    if (this.timer) clearInterval(this.timer);
   }
 
   private tick(): void {

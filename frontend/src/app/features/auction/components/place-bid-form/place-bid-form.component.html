@@ -1,0 +1,60 @@
+<form class="pbf-form" [formGroup]="form" (ngSubmit)="submit()">
+
+  <div class="pbf-field">
+    <label class="pbf-label" for="bid-amount">Your bid (USD)</label>
+
+    <div class="pbf-input-row">
+      <span class="pbf-prefix">$</span>
+      <input
+        id="bid-amount"
+        class="pbf-input"
+        type="number"
+        [attr.min]="minimumBid"
+        [attr.step]="bidIncrement || 1"
+        formControlName="amount"
+        [placeholder]="minimumBid"
+        aria-describedby="bid-amount-hint bid-amount-error"
+      />
+    </div>
+
+    <span id="bid-amount-hint" class="pbf-hint">
+      Minimum bid: <strong>{{ minimumBid | number:'1.2-2' }}</strong>
+    </span>
+
+    <span
+      id="bid-amount-error"
+      class="pbf-error"
+      role="alert"
+      *ngIf="amountControl.invalid && (amountControl.dirty || amountControl.touched)"
+    >
+      <ng-container *ngIf="amountControl.errors?.['required']">
+        Bid amount is required.
+      </ng-container>
+      <ng-container *ngIf="amountControl.errors?.['min']">
+        Bid must be greater than 0.
+      </ng-container>
+      <ng-container *ngIf="amountControl.errors?.['tooLow']">
+        Bid must be at least ${{ minimumBid | number:'1.2-2' }}.
+      </ng-container>
+    </span>
+  </div>
+
+  <div class="pbf-server-error" role="alert" *ngIf="serverError">
+    {{ serverError }}
+  </div>
+
+  <button
+    class="pbf-submit"
+    type="submit"
+    [disabled]="form.invalid || submitting || auctionEnded"
+    [class.pbf-submit--loading]="submitting"
+    aria-label="Place bid"
+  >
+    <ng-container *ngIf="!submitting">Place Bid</ng-container>
+    <span *ngIf="submitting" class="pbf-spinner" aria-hidden="true"></span>
+    <span *ngIf="submitting" class="pbf-sr-only">Placing bid…</span>
+  </button>
+
+  <p *ngIf="auctionEnded" class="pbf-ended">This auction has ended.</p>
+
+</form>

@@ -1,0 +1,15 @@
+<div class="bf-feed">
+  <h3 class="bf-heading">Live Bids</h3>
+
+  <ul class="bf-list" aria-label="Live bid feed">
+    @for (bid of bids; track bid.bidId) {
+      <li class="bf-item">
+        <span class="bf-bidder">{{ bid.bidderUsername }}</span>
+        <span class="bf-amount">{{ bid.amount | currency:'USD':'symbol':'1.2-2' }}</span>
+        <span class="bf-time">{{ bid.placedAt | date:'HH:mm:ss' }}</span>
+      </li>
+    } @empty {
+      <li class="bf-empty">No bids yet</li>
+    }
+  </ul>
+</div>
