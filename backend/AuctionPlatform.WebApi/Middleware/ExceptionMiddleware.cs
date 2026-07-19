@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using AuctionPlatform.Application.Common.Exceptions;
 using FluentValidation;
 
 namespace AuctionPlatform.WebApi.Middleware;
@@ -20,6 +21,11 @@ public class ExceptionMiddleware
         try
         {
             await _next(context);
+        }
+        catch (UnauthorizedException ex)
+        {
+            _logger.LogWarning(ex, "Unauthorized: {Message}", ex.Message);
+            await WriteErrorResponse(context, HttpStatusCode.Unauthorized, ex.Message);
         }
         catch (KeyNotFoundException ex)
         {

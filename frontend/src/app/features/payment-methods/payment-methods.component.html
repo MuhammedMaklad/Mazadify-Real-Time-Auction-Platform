@@ -1,0 +1,100 @@
+<div class="payment-methods-container">
+  <div class="header">
+    <h2>Payment Methods</h2>
+    <button (click)="showAddForm.set(!showAddForm())">
+      {{ showAddForm() ? 'Cancel' : '+ Add Payment Method' }}
+    </button>
+  </div>
+
+  @if (error()) {
+    <div class="error-alert">{{ error() }}</div>
+  }
+
+  @if (showAddForm()) {
+    <div class="add-form-card">
+      <h3>Add New Payment Method</h3>
+      <form [formGroup]="addForm" (ngSubmit)="addPaymentMethod()">
+        <div class="form-group">
+          <label>Type</label>
+          <select formControlName="type">
+            @for (type of paymentTypes; track type) {
+              <option [value]="type">{{ type }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Provider</label>
+          <input type="text" formControlName="provider" placeholder="e.g. Stripe, PayPal" />
+          @if (addForm.controls.provider.invalid && addForm.controls.provider.touched) {
+            <span class="field-error">Provider is required.</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Gateway Token</label>
+          <input type="text" formControlName="token" placeholder="Gateway token" />
+          @if (addForm.controls.token.invalid && addForm.controls.token.touched) {
+            <span class="field-error">Token is required.</span>
+          }
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Last 4 Digits</label>
+            <input type="text" formControlName="lastFour" placeholder="1234" maxlength="4" />
+          </div>
+          <div class="form-group">
+            <label>Expiry Month (MM)</label>
+            <input type="text" formControlName="expiryMonth" placeholder="01" maxlength="2" />
+          </div>
+          <div class="form-group">
+            <label>Expiry Year (YYYY)</label>
+            <input type="text" formControlName="expiryYear" placeholder="2028" maxlength="4" />
+          </div>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" formControlName="isDefault" />
+            Set as default
+          </label>
+        </div>
+
+        <button type="submit" [disabled]="addForm.invalid">Add Payment Method</button>
+      </form>
+    </div>
+  }
+
+  @if (loading()) {
+    <p>Loading payment methods…</p>
+  } @else if (paymentMethods().length === 0) {
+    <p class="empty-state">No payment methods added yet.</p>
+  } @else {
+    <ul class="payment-list">
+      @for (method of paymentMethods(); track method.id) {
+        <li class="payment-card" [class.default]="method.isDefault">
+          <div class="payment-info">
+            <span class="type-badge">{{ method.type }}</span>
+            <span class="provider">{{ method.provider }}</span>
+            @if (method.lastFour) {
+              <span class="last-four">•••• {{ method.lastFour }}</span>
+            }
+            @if (method.expiryMonth && method.expiryYear) {
+              <span class="expiry">{{ method.expiryMonth }}/{{ method.expiryYear }}</span>
+            }
+            @if (method.isDefault) {
+              <span class="default-badge">Default</span>
+            }
+          </div>
+          <div class="payment-actions">
+            @if (!method.isDefault) {
+              <button (click)="setDefault(method.id)">Set Default</button>
+            }
+            <button class="danger" (click)="remove(method.id)">Remove</button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</div>

@@ -12,5 +12,6 @@ public class User : IdentityUser<Guid>
     public ICollection<AutoBid> AutoBids { get; set; } = new List<AutoBid>();
     public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
     public ICollection<PaymentMethod> PaymentMethods { get; set; } = new List<PaymentMethod>();
+    public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     public AuctionWinner? WonAuction { get; set; }
 }

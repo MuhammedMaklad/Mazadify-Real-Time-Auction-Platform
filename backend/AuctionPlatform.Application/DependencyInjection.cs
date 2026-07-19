@@ -1,8 +1,12 @@
 using System.Reflection;
+using AuctionPlatform.Application.Auth.Interfaces;
+using AuctionPlatform.Application.Auth.Services;
 using AuctionPlatform.Application.Auctions.Interfaces;
 using AuctionPlatform.Application.Auctions.Services;
 using AuctionPlatform.Application.Categories.Interfaces;
 using AuctionPlatform.Application.Categories.Services;
+using AuctionPlatform.Application.PaymentMethods.Interfaces;
+using AuctionPlatform.Application.PaymentMethods.Services;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,6 +23,8 @@ public static class DependencyInjection
 
         services.AddScoped<IAuctionService, AuctionService>();
         services.AddScoped<ICategoryService, CategoryService>();
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IPaymentMethodService, PaymentMethodService>();
 
         return services;
     }
