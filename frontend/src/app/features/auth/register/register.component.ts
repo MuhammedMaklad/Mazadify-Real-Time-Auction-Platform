@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import {
   ReactiveFormsModule,
   FormBuilder,
@@ -21,13 +21,22 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './register.component.html'
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
 
   readonly error = signal<string | null>(null);
   readonly loading = signal(false);
+  readonly showPassword = signal(false);
+  readonly year = new Date().getFullYear();
+
+  ngOnInit(): void {
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/payment-methods']);
+    }
+  }
+
 
   readonly form = this.fb.nonNullable.group(
     {
@@ -47,6 +56,14 @@ export class RegisterComponent {
     { validators: passwordMatchValidator }
   );
 
+  togglePassword(): void {
+    this.showPassword.update((v) => !v);
+  }
+
+  clearError(): void {
+    if (this.error()) this.error.set(null);
+  }
+
   submit(): void {
     if (this.form.invalid) return;
 
@@ -54,7 +71,7 @@ export class RegisterComponent {
     this.error.set(null);
 
     this.authService.register(this.form.getRawValue()).subscribe({
-      next: () => this.router.navigate(['/']),
+      next: () => this.router.navigate(['/payment-methods']),
       error: (err: { error?: { error?: string } }) => {
         this.error.set(err?.error?.error ?? 'Registration failed. Please try again.');
         this.loading.set(false);

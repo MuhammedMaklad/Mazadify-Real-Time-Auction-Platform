@@ -1,81 +1,152 @@
-<div class="auth-container">
-  <h2>Create Account</h2>
+<div class="auth-split">
+  <aside class="auth-hero">
+    <span class="hero-blob b1"></span>
+    <span class="hero-blob b2"></span>
+    <span class="hero-blob b3"></span>
 
-  @if (error()) {
-    <div class="error-alert">{{ error() }}</div>
-  }
+    <div class="hero-content">
+      <div class="hero-brand">
+        <span class="hero-logo">M</span>
+        <span class="hero-name">Mazadify</span>
+      </div>
+      <h1 class="hero-title">Start bidding in seconds.</h1>
+      <p class="hero-subtitle">
+        Create your free account, pick a role, and jump straight into live auctions.
+      </p>
+      <ul class="hero-points">
+        <li>⚡ Live, concurrent bidding</li>
+        <li>🔔 Real-time notifications</li>
+        <li>💳 Secure payment methods</li>
+      </ul>
+    </div>
+    <div class="hero-footer">© {{ year }} Mazadify. All rights reserved.</div>
+  </aside>
 
-  <form [formGroup]="form" (ngSubmit)="submit()">
-    <div class="form-group">
-      <label for="username">Username</label>
-      <input
-        id="username"
-        type="text"
-        formControlName="username"
-        autocomplete="username"
-        placeholder="Username"
-      />
-      @if (form.controls.username.invalid && form.controls.username.touched) {
-        <span class="field-error">Username must be 3–50 characters.</span>
+  <main class="auth-panel">
+    <div class="auth-card">
+      <div class="auth-mobile-brand">
+        <span class="hero-logo">M</span>
+        <span class="hero-name">Mazadify</span>
+      </div>
+
+      <h2 class="auth-title">Create your account</h2>
+      <p class="auth-subtitle">Sign up to start bidding and selling</p>
+
+      @if (error()) {
+        <div class="error-alert" role="alert">
+          <span class="error-icon">!</span>
+          <span>{{ error() }}</span>
+        </div>
       }
+
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="form-group" [class.has-error]="form.controls.username.invalid && form.controls.username.touched">
+          <label for="username">Username</label>
+          <div class="input-wrap">
+            <span class="input-icon">👤</span>
+            <input
+              id="username"
+              type="text"
+              formControlName="username"
+              autocomplete="username"
+              placeholder="Username"
+              (input)="clearError()"
+            />
+          </div>
+          @if (form.controls.username.invalid && form.controls.username.touched) {
+            <span class="field-error">Username must be 3–50 characters.</span>
+          }
+        </div>
+
+        <div class="form-group" [class.has-error]="form.controls.email.invalid && form.controls.email.touched">
+          <label for="email">Email</label>
+          <div class="input-wrap">
+            <span class="input-icon">@</span>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              autocomplete="email"
+              placeholder="you@example.com"
+              (input)="clearError()"
+            />
+          </div>
+          @if (form.controls.email.invalid && form.controls.email.touched) {
+            <span class="field-error">Valid email is required.</span>
+          }
+        </div>
+
+        <div class="form-group" [class.has-error]="form.controls.password.invalid && form.controls.password.touched">
+          <label for="password">Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input
+              id="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              formControlName="password"
+              autocomplete="new-password"
+              placeholder="Min 8 chars, upper, digit & symbol"
+              (input)="clearError()"
+            />
+            <button
+              type="button"
+              class="toggle-password"
+              (click)="togglePassword()"
+              [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+            >
+              {{ showPassword() ? '🙈' : '👁' }}
+            </button>
+          </div>
+          @if (form.controls.password.invalid && form.controls.password.touched) {
+            <span class="field-error">
+              Password must be ≥8 chars, include uppercase, lowercase, digit, and symbol.
+            </span>
+          }
+        </div>
+
+        <div class="form-group" [class.has-error]="form.errors?.['passwordMismatch'] && form.controls.confirmPassword.touched">
+          <label for="confirmPassword">Confirm Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input
+              id="confirmPassword"
+              [type]="showPassword() ? 'text' : 'password'"
+              formControlName="confirmPassword"
+              autocomplete="new-password"
+              placeholder="Repeat password"
+              (input)="clearError()"
+            />
+          </div>
+          @if (form.errors?.['passwordMismatch'] && form.controls.confirmPassword.touched) {
+            <span class="field-error">Passwords do not match.</span>
+          }
+        </div>
+
+        <div class="form-group" [class.has-error]="form.controls.role.invalid && form.controls.role.touched">
+          <label for="role">I want to</label>
+          <div class="input-wrap">
+            <span class="input-icon">🎯</span>
+            <select id="role" formControlName="role">
+              <option value="Bidder">Bid on items</option>
+              <option value="Seller">Sell items</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn" [disabled]="form.invalid || loading()">
+          @if (loading()) {
+            <span class="spinner"></span>
+            <span>Creating account…</span>
+          } @else {
+            <span>Create Account</span>
+            <span aria-hidden="true">→</span>
+          }
+        </button>
+      </form>
+
+      <p class="auth-switch">
+        Already have an account? <a routerLink="/auth/login">Sign in</a>
+      </p>
     </div>
-
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input
-        id="email"
-        type="email"
-        formControlName="email"
-        autocomplete="email"
-        placeholder="you@example.com"
-      />
-      @if (form.controls.email.invalid && form.controls.email.touched) {
-        <span class="field-error">Valid email is required.</span>
-      }
-    </div>
-
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input
-        id="password"
-        type="password"
-        formControlName="password"
-        autocomplete="new-password"
-        placeholder="Min 8 chars with uppercase, digit & symbol"
-      />
-      @if (form.controls.password.invalid && form.controls.password.touched) {
-        <span class="field-error">
-          Password must be ≥8 chars, include uppercase, lowercase, digit, and symbol.
-        </span>
-      }
-    </div>
-
-    <div class="form-group">
-      <label for="confirmPassword">Confirm Password</label>
-      <input
-        id="confirmPassword"
-        type="password"
-        formControlName="confirmPassword"
-        autocomplete="new-password"
-        placeholder="Repeat password"
-      />
-      @if (form.errors?.['passwordMismatch'] && form.controls.confirmPassword.touched) {
-        <span class="field-error">Passwords do not match.</span>
-      }
-    </div>
-
-    <div class="form-group">
-      <label for="role">Role</label>
-      <select id="role" formControlName="role">
-        <option value="Bidder">Bidder</option>
-        <option value="Seller">Seller</option>
-      </select>
-    </div>
-
-    <button type="submit" [disabled]="form.invalid || loading()">
-      {{ loading() ? 'Creating account…' : 'Register' }}
-    </button>
-  </form>
-
-  <p>Already have an account? <a routerLink="/auth/login">Sign In</a></p>
+  </main>
 </div>
