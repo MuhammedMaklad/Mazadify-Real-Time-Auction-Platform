@@ -1,6 +1,7 @@
 using AuctionPlatform.Application.Winners.DTOs;
 using AuctionPlatform.Application.Winners.Interfaces;
 using AuctionPlatform.Application.Winners.Validators;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading;
@@ -10,6 +11,7 @@ namespace AuctionPlatform.WebApi.Controllers
 {
     [Route("api/auctions/{id:guid}")]
     [ApiController]
+    [Authorize]
     public class WinnersController : ControllerBase
     {
         private readonly IAuctionWinnerService _winnerService;
