@@ -93,7 +93,7 @@ export class SignalRService {
       this._notification.next(event);
     });
 
-    this.hubConnection.onreconnecting((error) => {
+    this.hubConnection.onreconnecting((error: Error | undefined) => {
       this._connectionState.next({ status: 'reconnecting', error: error?.message });
     });
 
@@ -103,7 +103,7 @@ export class SignalRService {
       this.reconnectAttempts = 0;
     });
 
-    this.hubConnection.onclose((error) => {
+    this.hubConnection.onclose((error: Error | undefined) => {
       this._connectionState.next({ status: 'disconnected', error: error?.message });
       this.scheduleReconnect();
     });

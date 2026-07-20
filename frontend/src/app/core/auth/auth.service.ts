@@ -2,11 +2,14 @@ import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, catchError, throwError } from 'rxjs';
 import { AuthResponse, LoginRequest, RegisterRequest, UserInfo } from '../models/api.models';
+import { AuthTokenService } from '../services/auth-token.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:5000/api/auth';
+  private readonly tokenService = inject(AuthTokenService);
+  private readonly apiUrl = `${environment.apiUrl}/auth`;
 
   private readonly _accessToken = signal<string | null>(null);
   private readonly _user = signal<UserInfo | null>(null);
@@ -14,6 +17,10 @@ export class AuthService {
   readonly isAuthenticated = computed(() => this._accessToken() !== null);
   readonly currentUser = computed(() => this._user());
   readonly accessToken = computed(() => this._accessToken());
+
+  constructor() {
+    this.restoreSession();
+  }
 
   register(request: RegisterRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/register`, request).pipe(
@@ -60,10 +67,19 @@ export class AuthService {
   private storeSession(response: AuthResponse): void {
     this._accessToken.set(response.accessToken);
     this._user.set(response.user);
+    this.tokenService.setToken(response.accessToken);
   }
 
   private clearSession(): void {
     this._accessToken.set(null);
     this._user.set(null);
+    this.tokenService.clearToken();
+  }
+
+  private restoreSession(): void {
+    const token = this.tokenService.getToken();
+    if (token) {
+      this._accessToken.set(token);
+    }
   }
 }
