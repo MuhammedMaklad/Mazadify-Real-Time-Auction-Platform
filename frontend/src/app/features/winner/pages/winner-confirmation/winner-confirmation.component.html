@@ -1,0 +1,81 @@
+<div class="wc-container">
+  <!-- Loading State -->
+  <div class="wc-loading-card" *ngIf="loading">
+    <div class="wc-spinner"></div>
+    <p>Retrieving winner details...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="wc-error-card" *ngIf="!loading && errorMsg">
+    <div class="wc-error-icon">⚠️</div>
+    <h2>Auction Winner Info Unavailable</h2>
+    <p>{{ errorMsg }}</p>
+    <a routerLink="/auctions" class="wc-btn wc-btn--secondary">Back to Auctions</a>
+  </div>
+
+  <!-- Main Winner Content -->
+  <div class="wc-content" *ngIf="!loading && winner">
+    <!-- Celebratory Banner -->
+    <div class="wc-banner">
+      <div class="wc-banner-icon">🏆</div>
+      <h1 class="wc-banner-title">Congratulations! You Won!</h1>
+      <p class="wc-banner-subtitle">
+        Your bid was the highest confirmed winning bid for this auction.
+      </p>
+    </div>
+
+    <div class="wc-grid">
+      <!-- Winner Summary Card -->
+      <div class="wc-card">
+        <h2 class="wc-card-title">Order & Payment Summary</h2>
+
+        <div class="wc-summary-list">
+          <div class="wc-summary-row">
+            <span class="wc-label">Winning Bid Price</span>
+            <span class="wc-value font-highlight">{{ winner.finalPrice | currency }}</span>
+          </div>
+
+          <div class="wc-summary-row">
+            <span class="wc-label">Estimated Shipping</span>
+            <span class="wc-value">{{ winner.shippingCost | currency }}</span>
+          </div>
+
+          <hr class="wc-divider" />
+
+          <div class="wc-summary-row wc-summary-row--total">
+            <span class="wc-label">Total Amount</span>
+            <span class="wc-value wc-total">{{ totalDue | currency }}</span>
+          </div>
+        </div>
+
+        <!-- Payment Status Pill -->
+        <div class="wc-status-box">
+          <span class="wc-label">Payment Status:</span>
+          <span
+            class="wc-status-pill"
+            [class.pill--paid]="winner.paymentStatus === 'Paid'"
+            [class.pill--pending]="winner.paymentStatus === 'Pending'"
+          >
+            {{ winner.paymentStatus }}
+          </span>
+        </div>
+
+        <!-- Action Button -->
+        <div class="wc-action-box" *ngIf="winner.paymentStatus !== 'Paid'">
+          <button type="button" class="wc-btn wc-btn--gold" (click)="proceedToPayment()">
+            💳 Proceed to Payment
+          </button>
+        </div>
+      </div>
+
+      <!-- Embedded Delivery Tracking Panel -->
+      <div class="wc-tracking-wrapper">
+        <app-delivery-tracking-panel
+          [auctionId]="auctionId"
+          [winner]="winner"
+          (winnerUpdated)="onWinnerUpdated($event)"
+        />
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,255 @@
+.dtp-card {
+  background: rgba(18, 24, 38, 0.75);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1.5rem;
+  color: #f1f5f9;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.dtp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.dtp-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.dtp-icon {
+  font-size: 1.3rem;
+}
+
+.dtp-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.dtp-status-badge {
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.badge--pending {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.badge--shipped {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(96, 165, 250, 0.3);
+}
+
+.badge--delivered {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+}
+
+.badge--cancelled {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Stepper */
+.dtp-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1.5rem 0 2rem 0;
+  position: relative;
+}
+
+.dtp-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  flex: 1;
+}
+
+.dtp-step-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(30, 41, 59, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #94a3b8;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.dtp-step--completed .dtp-step-circle {
+  background: #34d399;
+  border-color: #34d399;
+  color: #064e3b;
+  box-shadow: 0 0 12px rgba(52, 211, 153, 0.4);
+}
+
+.dtp-step--current .dtp-step-circle {
+  background: #6366f1;
+  border-color: #818cf8;
+  color: #ffffff;
+  box-shadow: 0 0 14px rgba(99, 102, 241, 0.5);
+}
+
+.dtp-step-label {
+  margin-top: 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.dtp-step--completed .dtp-step-label,
+.dtp-step--current .dtp-step-label {
+  color: #f1f5f9;
+}
+
+.dtp-step-line {
+  position: absolute;
+  top: 19px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  z-index: 1;
+}
+
+.dtp-step--completed .dtp-step-line {
+  background: #34d399;
+}
+
+/* Tracking box */
+.dtp-tracking-box {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.dtp-tracking-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.dtp-label {
+  font-size: 0.88rem;
+  color: #94a3b8;
+}
+
+.dtp-code {
+  font-family: monospace;
+  font-size: 0.95rem;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.dtp-btn-copy {
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #f1f5f9;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.dtp-btn-copy:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.dtp-no-tracking {
+  font-size: 0.85rem;
+  color: #64748b;
+  font-style: italic;
+}
+
+/* Admin controls */
+.dtp-admin-panel {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dtp-admin-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fbbf24;
+  margin: 0 0 0.85rem 0;
+}
+
+.dtp-control-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.dtp-select, .dtp-input {
+  flex: 1;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+  color: #ffffff;
+  font-size: 0.88rem;
+  outline: none;
+}
+
+.dtp-btn {
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.dtp-btn--primary {
+  background: #6366f1;
+  color: #ffffff;
+}
+
+.dtp-btn--primary:hover:not(:disabled) {
+  background: #4f46e5;
+}
+
+.dtp-btn--secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.dtp-btn--secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.dtp-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

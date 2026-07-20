@@ -26,6 +26,14 @@ export const routes: Routes = [
         (m) => m.PaymentMethodsComponent,
       ),
   },
+  {
+    path: 'auctions/:id/winner',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/winner/pages/winner-confirmation/winner-confirmation.component').then(
+        (m) => m.WinnerConfirmationComponent,
+      ),
+  },
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
   { path: '**', redirectTo: 'auth/login' },
 ];

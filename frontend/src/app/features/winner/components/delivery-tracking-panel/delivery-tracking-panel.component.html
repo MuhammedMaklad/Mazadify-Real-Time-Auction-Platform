@@ -1,0 +1,95 @@
+<div class="dtp-card">
+  <div class="dtp-header">
+    <div class="dtp-title-group">
+      <span class="dtp-icon">📦</span>
+      <h3 class="dtp-title">Delivery & Order Tracking</h3>
+    </div>
+    <span
+      class="dtp-status-badge"
+      [class.badge--pending]="winner.deliveryStatus === 'Pending'"
+      [class.badge--shipped]="winner.deliveryStatus === 'Shipped'"
+      [class.badge--delivered]="winner.deliveryStatus === 'Delivered' || winner.deliveryStatus === 'PickedUp'"
+      [class.badge--cancelled]="winner.deliveryStatus === 'Cancelled'"
+    >
+      {{ winner.deliveryStatus }}
+    </span>
+  </div>
+
+  <!-- Delivery Progress Stepper -->
+  <div class="dtp-stepper" *ngIf="winner.deliveryStatus !== 'Cancelled'">
+    <div
+      class="dtp-step"
+      *ngFor="let step of steps; let i = index"
+      [class.dtp-step--completed]="isStepCompleted(i)"
+      [class.dtp-step--current]="currentStepIndex === i"
+    >
+      <div class="dtp-step-circle">
+        <span *ngIf="isStepCompleted(i) && currentStepIndex !== i">✓</span>
+        <span *ngIf="!isStepCompleted(i) || currentStepIndex === i">{{ i + 1 }}</span>
+      </div>
+      <span class="dtp-step-label">{{ step }}</span>
+      <div class="dtp-step-line" *ngIf="i < steps.length - 1"></div>
+    </div>
+  </div>
+
+  <!-- Tracking Details -->
+  <div class="dtp-tracking-box">
+    <div class="dtp-tracking-info" *ngIf="winner.trackingNumber; else noTracking">
+      <span class="dtp-label">Tracking Number:</span>
+      <code class="dtp-code">{{ winner.trackingNumber }}</code>
+      <button
+        type="button"
+        class="dtp-btn-copy"
+        (click)="copyTracking()"
+      >
+        {{ copied ? 'Copied!' : 'Copy' }}
+      </button>
+    </div>
+    <ng-template #noTracking>
+      <div class="dtp-no-tracking">
+        <span>No tracking number assigned yet.</span>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Seller / Admin Controls -->
+  <div class="dtp-admin-panel" *ngIf="isAdminOrSeller">
+    <h4 class="dtp-admin-title">Seller Fulfillment Controls</h4>
+
+    <!-- Update Status Row -->
+    <div class="dtp-control-row">
+      <select class="dtp-select" [(ngModel)]="selectedStatus">
+        <option value="Shipped">Shipped</option>
+        <option value="Delivered">Delivered</option>
+        <option value="PickedUp">Picked Up</option>
+        <option value="Cancelled">Cancelled</option>
+      </select>
+      <button
+        type="button"
+        class="dtp-btn dtp-btn--primary"
+        (click)="updateStatus()"
+        [disabled]="updatingStatus"
+      >
+        {{ updatingStatus ? 'Updating...' : 'Update Status' }}
+      </button>
+    </div>
+
+    <!-- Update Tracking Row -->
+    <div class="dtp-control-row">
+      <input
+        type="text"
+        class="dtp-input"
+        placeholder="Enter tracking number..."
+        [(ngModel)]="trackingInput"
+      />
+      <button
+        type="button"
+        class="dtp-btn dtp-btn--secondary"
+        (click)="saveTracking()"
+        [disabled]="updatingTracking || !trackingInput.trim()"
+      >
+        {{ updatingTracking ? 'Saving...' : 'Set Tracking #' }}
+      </button>
+    </div>
+  </div>
+</div>
