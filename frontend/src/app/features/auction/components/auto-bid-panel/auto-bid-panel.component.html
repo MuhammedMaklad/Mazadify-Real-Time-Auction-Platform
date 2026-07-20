@@ -1,0 +1,87 @@
+<div class="ab-card">
+  <div class="ab-header">
+    <div class="ab-title-group">
+      <span class="ab-icon">⚡</span>
+      <h3 class="ab-title">Automatic Bidding Assistant</h3>
+    </div>
+
+    <!-- Status Indicator Badges -->
+    <div class="ab-status-badge" *ngIf="!loading">
+      <ng-container *ngIf="autoBid; else noAutoBid">
+        <span *ngIf="autoBid.isActive" class="badge badge--active">
+          <span class="pulse-dot"></span> Active (Up to {{ autoBid.maxAmount | currency }})
+        </span>
+        <span *ngIf="!autoBid.isActive" class="badge badge--exhausted">
+          ⚠️ Limit Reached ({{ autoBid.maxAmount | currency }})
+        </span>
+      </ng-container>
+      <ng-template #noAutoBid>
+        <span class="badge badge--none">Not Set</span>
+      </ng-template>
+    </div>
+  </div>
+
+  <div class="ab-body" *ngIf="!loading; else loadingState">
+    <p class="ab-description">
+      Set your maximum limit. Mazadify will automatically place minimum required bids on your behalf whenever you are outbid, up to your limit.
+    </p>
+
+    <!-- Error Alert -->
+    <div class="ab-alert ab-alert--error" *ngIf="errorMsg">
+      ⚠️ {{ errorMsg }}
+    </div>
+
+    <!-- Limit Form -->
+    <div class="ab-form-row">
+      <div class="ab-input-wrapper">
+        <span class="ab-currency-prefix">$</span>
+        <input
+          type="number"
+          class="ab-input"
+          [(ngModel)]="maxAmountInput"
+          [placeholder]="'Min ' + (minAllowedAmount | currency)"
+          [min]="minAllowedAmount"
+          [step]="bidIncrement"
+          [disabled]="saving"
+        />
+      </div>
+
+      <button
+        type="button"
+        class="ab-btn ab-btn--primary"
+        (click)="saveAutoBid()"
+        [disabled]="saving || !maxAmountInput"
+      >
+        <span *ngIf="!saving">{{ autoBid ? 'Update Limit' : 'Set Auto-Bid' }}</span>
+        <span *ngIf="saving">Saving...</span>
+      </button>
+    </div>
+
+    <!-- Actions Row -->
+    <div class="ab-actions-row" *ngIf="autoBid">
+      <button
+        type="button"
+        class="ab-btn ab-btn--subtle"
+        (click)="toggleActiveState()"
+        [disabled]="saving"
+      >
+        {{ autoBid.isActive ? 'Pause Auto-Bid' : 'Reactivate Auto-Bid' }}
+      </button>
+
+      <button
+        type="button"
+        class="ab-btn ab-btn--danger"
+        (click)="removeAutoBid()"
+        [disabled]="saving"
+      >
+        Remove Limit
+      </button>
+    </div>
+  </div>
+
+  <ng-template #loadingState>
+    <div class="ab-loading">
+      <span class="spinner"></span> Loading auto-bid status...
+    </div>
+  </ng-template>
+</div>

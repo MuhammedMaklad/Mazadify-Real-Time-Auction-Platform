@@ -18,6 +18,7 @@ import { PlaceBidFormComponent } from '../place-bid-form/place-bid-form.componen
 import { BidHistoryTableComponent } from '../bid-history-table/bid-history-table.component';
 import { OutbidAlertComponent } from '../outbid-alert/outbid-alert.component';
 import { CountdownComponent } from '../countdown/countdown.component';
+import { AutoBidPanelComponent } from '../auto-bid-panel/auto-bid-panel.component';
 
 /** Minimal auction shape this panel needs — matches AuctionDto from the backend */
 export interface AuctionBrief {
@@ -39,7 +40,8 @@ export interface AuctionBrief {
     PlaceBidFormComponent,
     BidHistoryTableComponent,
     OutbidAlertComponent,
-    CountdownComponent
+    CountdownComponent,
+    AutoBidPanelComponent
   ],
   templateUrl: './live-bid-panel.component.html',
   styleUrl: './live-bid-panel.component.css',

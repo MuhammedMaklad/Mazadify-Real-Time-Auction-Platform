@@ -45,6 +45,14 @@
     (bidPlaced)="onBidPlaced($event)"
   />
 
+  <!-- Automatic Bidding Panel -->
+  <app-auto-bid-panel
+    *ngIf="!auctionEnded"
+    [auctionId]="auction.id"
+    [currentHighestBid]="currentHighestBid"
+    [bidIncrement]="auction.bidIncrement"
+  />
+
   <hr class="lbp-divider" />
 
   <!-- Bid history table with live updates -->
