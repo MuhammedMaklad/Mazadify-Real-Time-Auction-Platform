@@ -1,0 +1,56 @@
+<section class="lbp-panel" aria-label="Live bidding panel">
+
+  <!-- Outbid alert banner sits at the top -->
+  <app-outbid-alert [auctionId]="auction.id" />
+
+  <!-- Header row: current price + countdown -->
+  <div class="lbp-header">
+    <app-highest-bid-display
+      [currentBid]="currentHighestBid"
+      [startingPrice]="auction.startingPrice"
+      [bidIncrement]="auction.bidIncrement"
+    />
+
+    <app-countdown
+      [auctionId]="auction.id"
+      [endTime]="auction.endTime"
+    />
+  </div>
+
+  <!-- Connection status indicator -->
+  <div
+    class="lbp-connection"
+    *ngIf="(connectionState$ | async) as state"
+    [class.lbp-connection--ok]="state.status === 'connected'"
+    [class.lbp-connection--warn]="state.status === 'reconnecting'"
+    [class.lbp-connection--off]="state.status === 'disconnected' || state.status === 'connecting'"
+    role="status"
+    [attr.aria-label]="'Connection: ' + state.status"
+  >
+    <span class="lbp-dot"></span>
+    <span class="lbp-connection-label">{{ connectionLabel(state.status) }}</span>
+  </div>
+
+  <hr class="lbp-divider" />
+
+  <!-- Place bid form (hidden when auction has ended) -->
+  <app-place-bid-form
+    [auctionId]="auction.id"
+    [currentBid]="currentHighestBid"
+    [startingPrice]="auction.startingPrice"
+    [bidIncrement]="auction.bidIncrement"
+    [auctionEnded]="auctionEnded"
+    (optimisticBid)="onOptimisticBid($event)"
+    (optimisticRollback)="onOptimisticRollback()"
+    (bidPlaced)="onBidPlaced($event)"
+  />
+
+  <hr class="lbp-divider" />
+
+  <!-- Bid history table with live updates -->
+  <app-bid-history-table
+    [auctionId]="auction.id"
+    [pendingBid]="pendingBid"
+  />
+
+</section>

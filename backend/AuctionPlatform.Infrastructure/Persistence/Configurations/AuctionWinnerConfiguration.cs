@@ -36,6 +36,11 @@ public class AuctionWinnerConfiguration : IEntityTypeConfiguration<AuctionWinner
         builder.HasIndex(e => e.AuctionId).IsUnique();
         builder.HasIndex(e => e.WinnerId);
 
+        builder.HasOne(e => e.Auction)
+            .WithOne(a => a.Winner)
+            .HasForeignKey<AuctionWinner>(e => e.AuctionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.HasOne(e => e.Winner)
             .WithOne(e => e.WonAuction)
             .HasForeignKey<AuctionWinner>(e => e.WinnerId)

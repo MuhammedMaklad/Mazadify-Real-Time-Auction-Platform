@@ -3,6 +3,7 @@ using AuctionPlatform.Application.Common.Models;
 using AuctionPlatform.Application.Hubs;
 using AuctionPlatform.Application.Notifications.DTOs;
 using AuctionPlatform.Domain.Entities;
+using AuctionPlatform.Domain.ValueTypes;
 using AutoMapper;
 using Microsoft.AspNetCore.SignalR;
 
@@ -92,5 +93,70 @@ public class NotificationService : INotificationService
     public Task MarkAllAsReadAsync(Guid userId, CancellationToken ct = default)
     {
         return _repository.MarkAllAsReadAsync(userId, ct);
+    }
+
+    public async Task NotifyBidPlacedAsync(
+        Guid auctionId,
+        Guid bidderId,
+        decimal amount,
+        CancellationToken ct = default)
+    {
+        await _hubContext.Clients
+            .Group($"auction-{auctionId}")
+            .SendAsync("BidPlaced", new { auctionId, bidderId, amount }, cancellationToken: ct);
+    }
+
+    public async Task NotifyOutbidAsync(
+        Guid auctionId,
+        Guid previousBidderId,
+        decimal currentHighestBid,
+        CancellationToken ct = default)
+    {
+        var request = new CreateNotificationRequest
+        {
+            UserId = previousBidderId,
+            Type = NotificationType.OutbidAlert,
+            Title = "You have been outbid!",
+            Message = $"Someone placed a higher bid on auction {auctionId}. Current highest bid is {currentHighestBid:C}.",
+            RelatedAuctionId = auctionId,
+            Payload = $"{{\"currentHighestBid\": {currentHighestBid}}}"
+        };
+        await CreateAndBroadcastAsync(request, ct);
+    }
+
+    public async Task NotifyYouWonAsync(
+        Guid auctionId,
+        Guid winnerId,
+        decimal finalPrice,
+        CancellationToken ct = default)
+    {
+        var request = new CreateNotificationRequest
+        {
+            UserId = winnerId,
+            Type = NotificationType.YouWon,
+            Title = "Congratulations! You won the auction!",
+            Message = $"You won the auction {auctionId} with a bid of {finalPrice:C}.",
+            RelatedAuctionId = auctionId,
+            Payload = $"{{\"finalPrice\": {finalPrice}}}"
+        };
+        await CreateAndBroadcastAsync(request, ct);
+    }
+
+    public async Task NotifyPaymentRequiredAsync(
+        Guid auctionId,
+        Guid winnerId,
+        decimal finalPrice,
+        CancellationToken ct = default)
+    {
+        var request = new CreateNotificationRequest
+        {
+            UserId = winnerId,
+            Type = NotificationType.PaymentRequired,
+            Title = "Payment Required",
+            Message = $"Payment is required for the won auction {auctionId}. Final price is {finalPrice:C}.",
+            RelatedAuctionId = auctionId,
+            Payload = $"{{\"finalPrice\": {finalPrice}}}"
+        };
+        await CreateAndBroadcastAsync(request, ct);
     }
 }

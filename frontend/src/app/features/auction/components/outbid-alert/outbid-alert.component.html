@@ -1,0 +1,26 @@
+<div
+  class="oba-banner"
+  role="alert"
+  aria-live="assertive"
+  *ngIf="visible"
+>
+  <span class="oba-icon" aria-hidden="true">⚠️</span>
+
+  <div class="oba-body">
+    <span class="oba-title">You've been outbid!</span>
+    <span class="oba-message">
+      New highest bid:
+      <span class="oba-amount">
+        {{ currentHighestBid | currency:'USD':'symbol':'1.2-2' }}
+      </span>
+      — bid again to stay in the lead.
+    </span>
+  </div>
+
+  <button
+    class="oba-dismiss"
+    type="button"
+    (click)="dismiss()"
+    aria-label="Dismiss outbid alert"
+  >&#x2715;</button>
+</div>

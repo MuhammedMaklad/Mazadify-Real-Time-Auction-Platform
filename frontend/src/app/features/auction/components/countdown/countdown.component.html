@@ -1,0 +1,6 @@
+<div class="cd-wrapper" [class.cd-ending]="isEnding" aria-label="Time remaining">
+  <span class="cd-time">{{ formattedTime }}</span>
+  @if (isEnding) {
+    <span class="cd-ending-label">Ending soon</span>
+  }
+</div>

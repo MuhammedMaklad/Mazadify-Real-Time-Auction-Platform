@@ -20,6 +20,8 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<Notification> Notifications => Set<Notification>();
 
+    public DbSet<Bid> Bids => Set<Bid>();
+    public DbSet<AutoBid> AutoBids => Set<AutoBid>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -27,3 +29,4 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
     }
 }
+

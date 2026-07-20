@@ -1,0 +1,90 @@
+<div class="bht-wrapper">
+
+  <div class="bht-header">
+    <h3 class="bht-title">Bid History</h3>
+    <span class="bht-count" *ngIf="totalCount > 0">{{ totalCount }} bids</span>
+  </div>
+
+  <!-- Skeleton loader -->
+  <div *ngIf="loading && rows.length === 0" class="bht-skeletons">
+    <div class="bht-skeleton" *ngFor="let _ of [1,2,3,4,5]"></div>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!loading && rows.length === 0" class="bht-empty">
+    No bids placed yet. Be the first!
+  </div>
+
+  <!-- Table -->
+  <div class="bht-table-scroll" *ngIf="rows.length > 0">
+    <table class="bht-table" aria-label="Bid history">
+      <thead>
+        <tr>
+          <th scope="col">Bidder</th>
+          <th scope="col" class="bht-right">Amount</th>
+          <th scope="col" class="bht-right">Time</th>
+          <th scope="col" class="bht-center">Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let row of rows; trackBy: trackRow"
+          [class.bht-row--pending]="row.pending"
+          [class.bht-row--top]="isTopBid(row)"
+        >
+          <!-- Pending (optimistic) row -->
+          <ng-container *ngIf="row.pending">
+            <td class="bht-bidder bht-muted">You</td>
+            <td class="bht-amount bht-right bht-muted">
+              {{ row.amount | currency:'USD':'symbol':'1.2-2' }}
+            </td>
+            <td class="bht-time bht-right bht-muted">Confirming…</td>
+            <td class="bht-center">
+              <span class="bht-badge bht-badge--pending">Pending</span>
+            </td>
+          </ng-container>
+
+          <!-- Confirmed row -->
+          <ng-container *ngIf="!row.pending">
+            <td class="bht-bidder">{{ asBid(row).bidder?.username ?? 'Unknown' }}</td>
+            <td class="bht-amount bht-right">
+              {{ asBid(row).amount | currency:'USD':'symbol':'1.2-2' }}
+            </td>
+            <td class="bht-time bht-right">
+              {{ asBid(row).placedAt | date:'HH:mm:ss' }}
+            </td>
+            <td class="bht-center">
+              <span
+                class="bht-badge"
+                [class.bht-badge--auto]="asBid(row).isAutoBid"
+                [class.bht-badge--manual]="!asBid(row).isAutoBid"
+              >
+                {{ asBid(row).isAutoBid ? 'Auto' : 'Manual' }}
+              </span>
+            </td>
+          </ng-container>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="bht-pagination" *ngIf="totalPages > 1">
+    <button
+      class="bht-page-btn"
+      [disabled]="page === 1 || loading"
+      (click)="goToPage(page - 1)"
+      aria-label="Previous page"
+    >&#8592;</button>
+
+    <span class="bht-page-info">{{ page }} / {{ totalPages }}</span>
+
+    <button
+      class="bht-page-btn"
+      [disabled]="page === totalPages || loading"
+      (click)="goToPage(page + 1)"
+      aria-label="Next page"
+    >&#8594;</button>
+  </div>
+
+</div>
